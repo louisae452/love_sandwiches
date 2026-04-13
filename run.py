@@ -88,7 +88,41 @@ def update_worksheet(worksheet_name, data_row):
     worksheet_to_update.append_row(data_row)
     print(f"{worksheet_name} updated successfully\n")
 
+def get_last_5_entries():
+    """
+    Get the last 5 entries in the sales worksheet
+    """
+    # Read the last five days.
+    sales = SHEET.worksheet("sales")
+    columns = []
+    for n in range (6):
+        n_column = sales.col_values(n+1)
+        n_column = n_column[len(n_column)-5:]
+        columns.append(n_column)
+    return columns
 
+def calculate_stock_data(entries):
+    """
+    Calculates the average of the values in columns.
+    Adds 10 %.
+    rounds up the number of sandwiches.
+    """
+    print("Calculating stock data...\n")
+    averages = []
+    for n in range(6):
+        column_to_add = entries[n]
+        total = 0
+        for i in range(5):
+            num =  int(column_to_add[i])
+            total += num
+        average = total / 5
+        new_stock = round(average + average * 0.1)
+        averages.append(new_stock)
+    print(averages)
+    return averages
+
+        
+       
 
 
 
@@ -104,7 +138,11 @@ def main():
     update_worksheet("sales", sales_data)
     new_surplus_data = calculate_surplus_data(sales_data)
     update_worksheet("surplus", new_surplus_data)
+    
 
+    sales_columns = get_last_5_entries()
+    new_stock = calculate_stock_data(sales_columns)
+    update_worksheet("stock", new_stock)
 
 print("Welcome to Love Sandwiches Data Automation")
 
