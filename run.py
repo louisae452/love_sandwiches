@@ -118,14 +118,18 @@ def calculate_stock_data(entries):
         average = total / 5
         new_stock = round(average + average * 0.1)
         averages.append(new_stock)
-    print(averages)
     return averages
 
-        
-       
-
-
-
+def get_stock_values(data):
+    """
+    Build dictionary of stock needed.
+    """
+    new_stock = SHEET.worksheet("stock").get_all_values()
+    headings = new_stock[0]
+    stock_advice = {}
+    for n in range(6):
+        stock_advice.update({headings[n]:data[n]})
+    return stock_advice
 
 def main():
     """
@@ -141,8 +145,12 @@ def main():
     
 
     sales_columns = get_last_5_entries()
-    new_stock = calculate_stock_data(sales_columns)
-    update_worksheet("stock", new_stock)
+    stock_data = calculate_stock_data(sales_columns)
+    update_worksheet("stock", stock_data)
+    stock_values = get_stock_values(stock_data)
+    print(stock_values)
+    
+    return stock_data
 
 print("Welcome to Love Sandwiches Data Automation")
 
